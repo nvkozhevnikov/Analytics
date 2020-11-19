@@ -1,7 +1,6 @@
 import mysql.connector
 from requests_html import HTMLSession
 from datetime import datetime
-import logging
 import os
 
 '''
@@ -189,11 +188,12 @@ def cacl_and_send_mysql (first_project,second_project, date_update):
 	total_result.insert(0,date_update)
 	send_data_mysql(total_result)
 
-def main():
-	try:
-		cnx = connect_db()
-		initial_date = read_last_date(cnx)
-		list_ids_and_dates = query_pixel_tools_last_id (projects, initial_date)
+def main():	
+
+	cnx = connect_db()
+	initial_date = read_last_date(cnx)
+	list_ids_and_dates = query_pixel_tools_last_id (projects, initial_date)
+	if len(list_ids_and_dates) > 0:		
 		p3903 = list_ids_and_dates['3903']
 		p4549 = list_ids_and_dates['4549']
 		p3903.reverse()
@@ -209,8 +209,5 @@ def main():
 				v_p4549 = query_pixel_tools_data([t for t in p4549[j].values()][0], '4549')
 				cacl_and_send_mysql (v_p3903, v_p4549, date_3903)
 			j += 1
-		raise RuntimeError('Excecution error!')
-	except:
-		log.exception('This is error message:')
 
 main()
